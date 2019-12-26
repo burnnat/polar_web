@@ -36,8 +36,8 @@ class PolarWeb:
 
         form = aiohttp.FormData()
         form.add_field('userId', user_id)
-        form.add_field('date', date)
-        form.add_field('weight', weight)
+        form.add_field('date', date.strftime('%d.%m.%Y'))
+        form.add_field('weight', '{0:.1f}'.format(weight))
         
         response = await self.send_request('training/updateDailyData', body=form, method='POST')
         return response.status is HTTP_OK
