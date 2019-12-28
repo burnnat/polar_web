@@ -40,12 +40,17 @@ class PolarWeb:
         form.add_field('weight', '{0:.1f}'.format(weight))
         
         response = await self.send_request('training/updateDailyData', body=form, method='POST')
-        return response.status is HTTP_OK
+        success = response.status is HTTP_OK
+
+        if not success:
+            _LOGGER.error('Request failed with code %d.', response.status)
+
+        return success
 
     async def login_if_needed(self):
         if COOKIE_SESSION in self.websession.cookie_jar.filter_cookies(DEFAULT_URL):
             _LOGGER.debug('Active session found, skipping login.')
-            return
+            return True
 
         _LOGGER.info('No active session found for Polar Web. Attempting login...')
         form = aiohttp.FormData()
@@ -55,7 +60,7 @@ class PolarWeb:
         response = await self.send_request('login', body=form, method='POST')
 
         if response.status is not HTTP_OK:
-            _LOGGER.error('Login failed. Please check user credentials.')
+            _LOGGER.error('Login failed with code %d. Please check user credentials.', response.status)
             return False
         else:
             return True
@@ -72,6 +77,7 @@ class PolarWeb:
 
             async with self.websession.request(method=method, url=url, params=params, data=body, headers=self._headers, timeout=self._timeout) as response:
                 if response.status == HTTP_OK:
+                    await response.text()
                     return response
                 else:
                     _LOGGER.warning("Error %d from Polar.", response.status)
