@@ -19,7 +19,7 @@ setup_requirements = [ ]
 test_requirements = [ ]
 
 setup(
-    version='0.0.1',
+    version='0.0.2',
     author="Nat Burns",
     author_email='nbaccount@burnskids.com',
     classifiers=[

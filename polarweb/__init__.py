@@ -4,6 +4,6 @@
 
 __author__ = """Nat Burns"""
 __email__ = 'nbaccount@burnskids.com'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 from polarweb.main import PolarWeb
